@@ -4,7 +4,7 @@ library("shiny")
 
 library("rlang")
 library("httr")
-# install.packages("tidyr")
+ #install.packages("tidyr")
 library("dplyr")
 library("tidyr")
 library("ggplot2")
@@ -12,6 +12,8 @@ library("stringr")
 library("jsonlite")
 
 source("apikey.R")
+
+
 
 ###################################################
 ########## Process the data #######################
@@ -42,6 +44,24 @@ uri <- paste0(base.uri, resource.uri)
 response <- GET(uri, add_headers('Ocp-Apim-Subscription-Key' = api.key))
 response <- fromJSON(content(response, "text"))
 leaders <- response$Results
+
+#call to get the matchID for the players
+base.uri <- "https://www.haloapi.com/stats/h5/players/"
+#player}/matches[?modes][&start][&count]
+resource.uri <- "Naded/matches?modes=arena"
+uri <- paste0(base.uri, resource.uri)
+response <- GET(uri, add_headers('Ocp-Apim-Subscription-Key' = api.key))
+response <- fromJSON(content(response, "text"))
+match.id <- response$Results
+
+#call to get the results from players in a specific match
+base.uri <- "https://www.haloapi.com/stats/h5/arena/matches/"
+#matchID
+resource.uri <- "ce9a15c4-a62e-4ab1-b5f3-af52871287c6"
+uri <- paste0(base.uri,resource.uri)
+response <- GET(uri, add_headers('Ocp-Apim-Subscription-Key' = api.key))
+response <- fromJSON(content(response, "text"))
+arena.results <- 
 
 
 
