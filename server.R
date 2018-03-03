@@ -49,7 +49,7 @@ leaders <- response$Results
 ########## Defining the server ####################
 ###################################################
 my.server <- function(input, output) {
-
+  
 }
 
 shinyServer(my.server)
