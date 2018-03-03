@@ -11,7 +11,7 @@ library("ggplot2")
 library("stringr")
 library("jsonlite")
 
-source("apikey.R")
+source("api_key.R")
 
 ###################################################
 ########## Process the data #######################
@@ -36,6 +36,7 @@ latest.finished.season.id <- latest.finished.season.id[1, 1]
 # the most recent finished season id f7b4e7b4-8f70-431d-b604-d13cffff1114
 
 base.uri <- "https://www.haloapi.com/stats/h5/player-leaderboards/csr/"
+
 # resource {seasonId}/{playlistId}
 resource.uri <- paste0(latest.finished.season.id, "/c98949ae-60a8-43dc-85d7-0feb0b92e719")
 uri <- paste0(base.uri, resource.uri)
@@ -43,7 +44,21 @@ response <- GET(uri, add_headers('Ocp-Apim-Subscription-Key' = api.key))
 response <- fromJSON(content(response, "text"))
 leaders <- response$Results
 
+# service information of top players
+base.uri.stats <- "https://www.haloapi.com/stats/" 
+player.ids <- leaders$Player$Gamertag %>% 
+  paste0(collapse = ",")
+resource.stats <- paste0("h5/servicerecords/arena?players=WhosTradeMark,naded&seasonId=f7b4e7b4-8f70-431d-b604-d13cffff1114")
+uri.stats <- paste0(base.uri.stats, resource.stats)
+halo.stats <- GET(uri.stats, add_headers("Ocp-Apim-Subscription-Key" = api.key)) 
 
+y <- content(halo.stats ,"text")
+
+x <- fromJSON(y)
+
+print(halo.stats)
+
+halo.frame <- data.frame(x$Results)
 
 ###################################################
 ########## Defining the server ####################
