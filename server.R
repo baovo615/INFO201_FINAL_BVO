@@ -61,7 +61,7 @@ resource.uri <- "ce9a15c4-a62e-4ab1-b5f3-af52871287c6"
 uri <- paste0(base.uri,resource.uri)
 response <- GET(uri, add_headers('Ocp-Apim-Subscription-Key' = api.key))
 response <- fromJSON(content(response, "text"))
-arena.results <- 
+arena.results <- response$PlayerStats
 
 
 
