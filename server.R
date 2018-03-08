@@ -138,7 +138,26 @@ average.kd <- round(mean(kd.df$`Kill Death Ratio`), digits = 2)
 ########## Defining the server ####################
 ###################################################
 my.server <- function(input, output) {
+output$plot <- renderPlot({
+    info.to.use <- playlists.with.duration %>% filter(name %in% input$playlists)
+    par(mar=c(11, 5, 0.5, 0.5))
+    hist <- barplot(info.to.use$totalDuration, names.arg=info.to.use$name, las=2, ylab = "Total Number of Hours Played")
+    return(hist)
+  })
 
+  # create a table with playlist information for those who don't know much about the game
+  output$description <- renderTable({
+    result <- playlists.with.duration %>% select(name, description, isRanked, isActive, gameMode)
+    return(result)
+  })
+
+  output$stats <- renderTable({
+    result <- playlists.with.duration %>% filter(name %in% input$playlists)
+    totalhours <- sum(as.numeric(result$totalDuration))
+    result <- result %>% mutate(percentage = round(totalDuration / totalhours * 100))
+    result <- result %>% select(name, description, isRanked, isActive, gameMode, totalDuration, percentage)
+    return(result)
+  })
 }
 
 shinyServer(my.server)
