@@ -1,5 +1,4 @@
-# Luxi Zheng
-
+# Luxi Zheng, Bao Vo, Muhammad
 library("shiny")
 library("rlang")
 library("httr")
