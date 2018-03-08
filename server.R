@@ -32,8 +32,8 @@ my.server <- function(input, output) {
   
   # display additional information on user clicks
   output$click_info <- renderPrint({
-    nearPoints(halo.data, input$plot1_click, addDist = TRUE) %>% 
-      select(rank, player.ids)
+    nearPoints(test, input$plot1_click, addDist = TRUE) %>% 
+      select(rank, player.ids, Season)
   })
   # display additional information on user clicks
   output$click_location <- renderText({

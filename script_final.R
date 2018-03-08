@@ -1,4 +1,3 @@
-# Luxi Zheng
 
 library("shiny")
 library("rlang")

@@ -1,6 +1,14 @@
-library(shiny)
 halo.data <- read.csv("data/halo.data.csv", stringsAsFactors = FALSE)
 halo.data1 <- read.csv("data/halo.data1.csv", stringsAsFactors = FALSE)
+total.halo.data <- rbind(halo.data, halo.data1)
+test <- group_by(total.halo.data, Season)
+library("shiny")
+library("rlang")
+library("httr")
+library("dplyr")
+library("tidyr")
+library("ggplot2")
+library("rsconnect")
 
 # Define UI for application that draws a histogram
 my.ui <- fluidPage(
