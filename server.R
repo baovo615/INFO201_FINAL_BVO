@@ -1,7 +1,3 @@
-halo.data <- read.csv("data/halo.data.csv", stringsAsFactors = FALSE)
-halo.data1 <- read.csv("data/halo.data1.csv", stringsAsFactors = FALSE)
-total.halo.data <- rbind(halo.data, halo.data1)
-test <- group_by(total.halo.data, Season)
 library("shiny")
 library("rlang")
 library("httr")
@@ -9,6 +5,19 @@ library("dplyr")
 library("tidyr")
 library("ggplot2")
 library("rsconnect")
+
+halo.data <- read.csv("data/halo.data.csv", stringsAsFactors = FALSE)
+halo.data1 <- read.csv("data/halo.data1.csv", stringsAsFactors = FALSE)
+total.halo.data <- rbind(halo.data, halo.data1)
+test <- group_by(total.halo.data, Season)
+
+data <- read.csv("data/matches.csv")
+
+total.by.playlist <- data %>% group_by(PlaylistId) %>% 
+  summarize(totalDuration = sum(as.numeric(durations)) /60 /60)
+
+playlists.with.duration <- left_join(allplaylists, total.by.playlist, by= c("id" = "PlaylistId")) %>% filter(!is.na(totalDuration)) 
+
 ###################################################
 ########## Defining the server ####################
 ###################################################
