@@ -77,8 +77,12 @@ my.ui <- fluidPage(
                  br(),
                  tableOutput("stats"),
                  br(),
+<<<<<<< HEAD
                  p("This following is a table with descriptions for each 
                    playlist."),
+=======
+                 p("This following is a table with descriptions for each playlist."),
+>>>>>>> distribution
                  tableOutput("description")
                )
              )
