@@ -4,7 +4,7 @@
 
 ### By: Muhammad Hussain, Luxi Zheng, Bao Vo, Zixin Wang
 
-![Alt text][img/halo5.jpg]
+![Alt text][./img/halo5.jpg]
 
 In this project our group decided to use the Halo 5 API and gather information on players. Here is a breakdown of what some of us decided to do.
 
