@@ -10,7 +10,12 @@ library("stringr")
 library("jsonlite")
 library("R.utils")
 library("lubridate")
-source("apikey.R")
+source("api_key.R")
+
+halo.data <- read.csv("data/halo.data.csv", stringsAsFactors = FALSE)
+halo.data1 <- read.csv("data/halo.data1.csv", stringsAsFactors = FALSE)
+total.halo.data <- rbind(halo.data, halo.data1)
+test <- group_by(total.halo.data, Season)
 
 ###################################################
 ########## Process the data #######################
@@ -29,54 +34,6 @@ allplaylists <- playlists %>% select(name, description, isRanked, isActive, game
 ranked.active.playlists <- playlists %>%
   filter(isRanked == TRUE & isActive == TRUE) %>%
   select(name, description, gameMode, id)
-# team arena's id c98949ae-60a8-43dc-85d7-0feb0b92e719
-# 
-# # to get the most recent finished season
-# base.uri <- "https://www.haloapi.com/metadata/h5/metadata/seasons"
-# response <- GET(base.uri, add_headers('Ocp-Apim-Subscription-Key' = api.key))
-# seasons <- fromJSON(content(response, "text"))
-# latest.finished.season.id <- seasons %>%
-#   filter(isActive == FALSE) %>% filter(row_number()==n()) %>% select(id)
-# latest.finished.season.id <- latest.finished.season.id[1, 1]
-# # the most recent finished season id f7b4e7b4-8f70-431d-b604-d13cffff1114
-# 
-# base.uri <- "https://www.haloapi.com/stats/h5/player-leaderboards/csr/"
-# # resource {seasonId}/{playlistId}
-# resource.uri <- paste0(latest.finished.season.id, "/c98949ae-60a8-43dc-85d7-0feb0b92e719?count=250")
-# uri <- paste0(base.uri, resource.uri)
-# response <- GET(uri, add_headers('Ocp-Apim-Subscription-Key' = api.key))
-# response <- fromJSON(content(response, "text"))
-# leaders <- response$Results
-# leaders <- flatten(leaders) 
-# 
-# rows.to.used <- seq(10, 169, 10)
-# rows.to.used <- c(1, rows.to.used) 
-# condense.leaders <- leaders[rows.to.used, ] 
-# 
-# allgametags <- leaders[['Player.Gamertag']]
-# allnospacetags <- gsub(" ", "+", allgametags)
-# 
-# GetMatches <- function(tag) {
-#   Sys.sleep(1)
-#   uri <- paste0("https://www.haloapi.com/stats/h5/players/", tag, "/matches?modes=Arena")
-#   response <- GET(uri, add_headers('Ocp-Apim-Subscription-Key' = api.key))
-#   results <- fromJSON(content(response, "text"))
-#   results <- results$Results
-#   results <- as.data.frame(results)
-#   results <- flatten(results)
-#   return(data.frame(PlaylistId = results$HopperId, MatchDuration = results$MatchDuration, stringsAsFactors = FALSE))
-# }
-
-# all <- lapply(allnospacetags, GetMatches)
-
-# all.df <- all[[1]]
-# for (i in 2:169) {
-#   y <- all[[i]]
-#   all.df <- rbind(all.df, y)
-# } 
-# all.df <- all.df %>% mutate(durations = as.duration(MatchDuration))
-# 
-# write.csv(all.df, "data/matches.csv")
 
 data <- read.csv("data/matches.csv")
 
@@ -110,6 +67,33 @@ my.server <- function(input, output) {
     result <- result %>% select(name, description, isRanked, isActive, gameMode, totalDuration, percentage)
     return(result)
   })
+  
+  # generates plot of data
+  output$plot1 <- renderPlot({
+    x <- input$xaxis
+    y <- input$yaxis
+    
+    # plot axis derived from user inputs 
+    ggplot(test, aes_string(x, y, color = "Season")) + 
+      geom_point() +
+      geom_smooth(method = "lm") +
+      scale_color_discrete(name  ="Season",
+                           labels=c("2017-09-05 to 2017-11-01",
+                                    "2017-11-01 to 2018-03-01")) +
+      labs(title = paste0(x, " vs ", y)) 
+    
+  })
+  
+  # display additional information on user clicks
+  output$click_info <- renderPrint({
+    nearPoints(test, input$plot1_click, addDist = TRUE) %>% 
+      select(rank, player.ids, Season)
+  })
+  # display additional information on user clicks
+  output$click_location <- renderText({
+    paste0("x= ", input$plot1_click$x, "\ny= ", input$plot1_click$y)
+  })
+  
 }
 
 shinyServer(my.server)
