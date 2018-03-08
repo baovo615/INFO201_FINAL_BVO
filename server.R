@@ -178,7 +178,7 @@ output$plot <- renderPlot({
   # display additional information on user clicks
   output$click_info <- renderPrint({
     nearPoints(total.halo.data, input$plot1_click, addDist = TRUE) %>% 
-      select(rank, player.ids, Season)
+      select(rank, player.ids)
   })
   # display additional information on user clicks
   output$click_location <- renderText({
