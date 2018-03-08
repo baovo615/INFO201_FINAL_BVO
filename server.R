@@ -158,6 +158,33 @@ output$plot <- renderPlot({
     result <- result %>% select(name, description, isRanked, isActive, gameMode, totalDuration, percentage)
     return(result)
   })
+  
+  # generates plot of data
+  output$plot1 <- renderPlot({
+    x <- input$xaxis
+    y <- input$yaxis
+    
+    # plot axis derived from user inputs 
+    ggplot(test, aes_string(x, y, color = "Season")) + 
+      geom_point() +
+      geom_smooth(method = "lm") +
+      scale_color_discrete(name  ="Season",
+                           labels=c("2017-09-05 to 2017-11-01",
+                                    "2017-11-01 to 2018-03-01")) +
+      labs(title = paste0(x, " vs ", y)) 
+    
+  })
+  
+  # display additional information on user clicks
+  output$click_info <- renderPrint({
+    nearPoints(total.halo.data, input$plot1_click, addDist = TRUE) %>% 
+      select(rank, player.ids, Season)
+  })
+  # display additional information on user clicks
+  output$click_location <- renderText({
+    paste0("x= ", input$plot1_click$x, "\ny= ", input$plot1_click$y)
+  })
+  
 }
 
 shinyServer(my.server)
