@@ -1,4 +1,4 @@
-# Luxi Zheng, Bao Vo, Muhammad
+# Luxi Zheng, Bao Vo, Muhammad Hussain
 library("shiny")
 library("rlang")
 library("httr")
