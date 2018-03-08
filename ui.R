@@ -14,8 +14,7 @@ test <- group_by(total.halo.data, Season)
 
 
 # Define UI for application that draws a histogram
-my.ui <- fluidPage(
-  img(src='halo.jpeg', align = "right"),
+my.ui <- fluidPage( 
   # Application title
   titlePanel("HALO 5"),
   h4("Due to a limitation on the calls we can get from the API, please wait 

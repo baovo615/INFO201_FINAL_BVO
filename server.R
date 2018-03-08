@@ -41,7 +41,14 @@ total.by.playlist <- data %>% group_by(PlaylistId) %>%
 
 playlists.with.duration <- left_join(allplaylists, total.by.playlist, by= c("id" = "PlaylistId")) %>% filter(!is.na(totalDuration))
 
-
+# to get the most recent finished season
+base.uri <- "https://www.haloapi.com/metadata/h5/metadata/seasons"
+response <- GET(base.uri, add_headers('Ocp-Apim-Subscription-Key' = api.key))
+seasons <- fromJSON(content(response, "text"))
+latest.finished.season.id <- seasons %>%
+  filter(isActive == FALSE) %>% filter(row_number()==n()) %>% select(id)
+latest.finished.season.id <- latest.finished.season.id[1, 1]
+# the most recent finished season id f7b4e7b4-8f70-431d-b604-d13cffff1114
 
 
 ###################################################
