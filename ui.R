@@ -41,7 +41,7 @@ my.ui <- fluidPage(
                  tableOutput("stats"),
                  br(),
                  p("This following is a table with descriptions for each playlist."),
-                 tableOutput("description")s
+                 tableOutput("description")
                )
              )
     ),
