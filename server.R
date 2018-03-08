@@ -133,7 +133,7 @@ gametags <- gsub('([[:punct:]])|\\s+','+',gametags)
 
 #write.csv(kd.df, "data/killdeathratio.csv")
 kd.df <- read.csv("data/killdeathratio.csv", stringsAsFactors = FALSE)
-average.kd <- round(mean(kd.df$`Kill Death Ratio`), digits = 2)
+average.kd <- round(mean(kd.df$Kill.Death.Ratio), digits = 2)
 ###################################################
 ########## Defining the server ####################
 ###################################################
@@ -180,10 +180,18 @@ output$plot <- renderPlot({
     nearPoints(total.halo.data, input$plot1_click, addDist = TRUE) %>% 
       select(rank, player.ids)
   })
+  
   # display additional information on user clicks
   output$click_location <- renderText({
     paste0("x= ", input$plot1_click$x, "\ny= ", input$plot1_click$y)
   })
+  
+  my.server <- function(input, output) {
+    output$table <- renderTable({
+      player.selector <- subset(kd.df, 
+                                kd.df$GamerTag %in% input$player)
+    })
+  }
   
 }
 
